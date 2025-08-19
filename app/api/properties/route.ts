@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Property from '@/models/PropertyModel';
+import Property from '@/models/Property';
 
 export async function GET(request: NextRequest) {
   try {

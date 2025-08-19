@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/models/property';
+import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/models/admin';
 
 // Mock database - in production, this would be a real database
 let properties: Property[] = [

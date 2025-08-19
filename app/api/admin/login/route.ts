@@ -1,29 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ADMIN_CREDENTIALS } from '@/constants';    
+import Admin from '@/models/admin';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { username, password } = body;
+    const { email, password } = body;
 
-    if (!username || !password) {
+    if (!email || !password) {
       return NextResponse.json(
-        { message: 'Username and password are required' },
+        { message: 'email and password are required' },
         { status: 400 }
       );
     }
 
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-      const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
+    const admin = await Admin.findOne({ email });
+
+    if (!admin) {
+      return NextResponse.json({ message: 'Admin not found' }, { status: 404 });
+    }
+
+    if(await bcrypt.compare(password, admin.password)) {
+      const token = jwt.sign({ email: email, role: 'PROPXNEX_ADMIN' }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
       
+      const cookie = await cookies();
+      cookie.set('propnex_admin_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 30,
+      });
+
       return NextResponse.json({
         success: true,
         message: 'Login successful',
-        token: token,
-        user: {
-          username: username,
-          role: 'admin'
-        }
+        user: admin
       });
     } else {
       return NextResponse.json(
@@ -31,6 +43,8 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+      
+    
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(

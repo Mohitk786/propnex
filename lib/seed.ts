@@ -1,11 +1,20 @@
-import dbConnect from './db';
-import Property from '../models/PropertyModel';
+import dbConnect from "./db";
+import Property from "../models/Property";
+import Admin from "@/models/admin";
+import bcrypt from "bcryptjs";
+
+const adminDetails = {
+  name: "Satish Yadav",
+  email: "yadav.satish1232@gmail.com",
+  password: await bcrypt.hash("yadav_admin_123", 10),
+};
 
 const sampleProperties = [
   // Properties for Sale
   {
     title: "Luxury 3BHK Apartment in Downtown Mumbai",
-    description: "Beautiful apartment with modern amenities, located in the heart of Mumbai. Features include a gym, swimming pool, garden, and 24/7 security. Perfect for families looking for luxury living in a prime location.",
+    description:
+      "Beautiful apartment with modern amenities, located in the heart of Mumbai. Features include a gym, swimming pool, garden, and 24/7 security. Perfect for families looking for luxury living in a prime location.",
     price: 25000000,
     priceType: "sale",
     currency: "INR",
@@ -31,11 +40,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Beautiful Villa with Private Pool",
-    description: "Spacious villa with private pool and garden, perfect for families. Features include a private swimming pool, landscaped garden, security system, and ample parking space.",
+    description:
+      "Spacious villa with private pool and garden, perfect for families. Features include a private swimming pool, landscaped garden, security system, and ample parking space.",
     price: 85000000,
     priceType: "sale",
     currency: "INR",
@@ -51,7 +61,13 @@ const sampleProperties = [
     status: "available",
     featured: true,
     images: ["/property-2.jpg", "/property-2-2.jpg", "/property-2-3.jpg"],
-    amenities: ["Private Pool", "Garden", "Security", "Parking", "Servant Quarters"],
+    amenities: [
+      "Private Pool",
+      "Garden",
+      "Security",
+      "Parking",
+      "Servant Quarters",
+    ],
     parking: true,
     furnished: false,
     readyToMove: true,
@@ -61,11 +77,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Modern Office Space in Tech Park",
-    description: "Professional office space in a modern tech park with all amenities. Perfect for startups and established companies looking for premium office space in a tech hub.",
+    description:
+      "Professional office space in a modern tech park with all amenities. Perfect for startups and established companies looking for premium office space in a tech hub.",
     price: 12000000,
     priceType: "sale",
     currency: "INR",
@@ -81,7 +98,13 @@ const sampleProperties = [
     status: "available",
     featured: false,
     images: ["/property-3.jpg", "/property-3-2.jpg"],
-    amenities: ["24/7 Security", "Parking", "Cafeteria", "Conference Rooms", "High-Speed Internet"],
+    amenities: [
+      "24/7 Security",
+      "Parking",
+      "Cafeteria",
+      "Conference Rooms",
+      "High-Speed Internet",
+    ],
     parking: true,
     furnished: false,
     readyToMove: true,
@@ -91,11 +114,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Premium Penthouse with City View",
-    description: "Luxury penthouse with panoramic city views and premium amenities. Features include a private terrace, city skyline views, luxury finishes, and exclusive access to building amenities.",
+    description:
+      "Luxury penthouse with panoramic city views and premium amenities. Features include a private terrace, city skyline views, luxury finishes, and exclusive access to building amenities.",
     price: 58000000,
     priceType: "sale",
     currency: "INR",
@@ -111,7 +135,14 @@ const sampleProperties = [
     status: "available",
     featured: true,
     images: ["/property-4.jpg", "/property-4-2.jpg", "/property-4-3.jpg"],
-    amenities: ["City View", "Luxury Amenities", "Gym", "Pool", "Private Terrace", "Security"],
+    amenities: [
+      "City View",
+      "Luxury Amenities",
+      "Gym",
+      "Pool",
+      "Private Terrace",
+      "Security",
+    ],
     parking: true,
     furnished: true,
     readyToMove: true,
@@ -121,11 +152,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Family Home with Garden",
-    description: "Beautiful family home with spacious garden and modern amenities. Perfect for families who want space, privacy, and a connection to nature while staying in the city.",
+    description:
+      "Beautiful family home with spacious garden and modern amenities. Perfect for families who want space, privacy, and a connection to nature while staying in the city.",
     price: 32000000,
     priceType: "sale",
     currency: "INR",
@@ -151,13 +183,14 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
 
   // Properties for Rent
   {
     title: "Furnished 2BHK in Prime Location",
-    description: "Beautiful furnished apartment with modern amenities, located in a prime area. Perfect for professionals or small families looking for a comfortable living space.",
+    description:
+      "Beautiful furnished apartment with modern amenities, located in a prime area. Perfect for professionals or small families looking for a comfortable living space.",
     price: 45000,
     priceType: "rent",
     currency: "INR",
@@ -183,11 +216,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Spacious Family Villa with Garden",
-    description: "Large villa perfect for families with garden space. Features include a private garden, ample parking, and a peaceful environment away from the city hustle.",
+    description:
+      "Large villa perfect for families with garden space. Features include a private garden, ample parking, and a peaceful environment away from the city hustle.",
     price: 85000,
     priceType: "rent",
     currency: "INR",
@@ -203,7 +237,13 @@ const sampleProperties = [
     status: "available",
     featured: true,
     images: ["/property-7.jpg", "/property-7-2.jpg"],
-    amenities: ["Private Pool", "Garden", "Security", "Parking", "Servant Quarters"],
+    amenities: [
+      "Private Pool",
+      "Garden",
+      "Security",
+      "Parking",
+      "Servant Quarters",
+    ],
     parking: true,
     furnished: false,
     readyToMove: true,
@@ -213,11 +253,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Modern Studio in Tech Hub",
-    description: "Contemporary studio apartment in tech hub area. Perfect for young professionals or students looking for modern, compact living space.",
+    description:
+      "Contemporary studio apartment in tech hub area. Perfect for young professionals or students looking for modern, compact living space.",
     price: 25000,
     priceType: "rent",
     currency: "INR",
@@ -243,11 +284,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Luxury Penthouse with Amenities",
-    description: "Premium penthouse with luxury amenities and city views. Perfect for executives or families who want the best of luxury living.",
+    description:
+      "Premium penthouse with luxury amenities and city views. Perfect for executives or families who want the best of luxury living.",
     price: 120000,
     priceType: "rent",
     currency: "INR",
@@ -263,7 +305,14 @@ const sampleProperties = [
     status: "available",
     featured: true,
     images: ["/property-9.jpg", "/property-9-2.jpg"],
-    amenities: ["Luxury Amenities", "Gym", "Pool", "City View", "Security", "Parking"],
+    amenities: [
+      "Luxury Amenities",
+      "Gym",
+      "Pool",
+      "City View",
+      "Security",
+      "Parking",
+    ],
     parking: true,
     furnished: true,
     readyToMove: true,
@@ -273,11 +322,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Cozy 1BHK Near Metro",
-    description: "Cozy apartment near metro station with all basic amenities. Perfect for working professionals who want convenience and comfort.",
+    description:
+      "Cozy apartment near metro station with all basic amenities. Perfect for working professionals who want convenience and comfort.",
     price: 18000,
     priceType: "rent",
     currency: "INR",
@@ -303,11 +353,12 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
+    createdBy: "admin",
   },
   {
     title: "Serviced Apartment with Gym",
-    description: "Fully serviced apartment with gym facilities and daily housekeeping. Perfect for business travelers or professionals who want hassle-free living.",
+    description:
+      "Fully serviced apartment with gym facilities and daily housekeeping. Perfect for business travelers or professionals who want hassle-free living.",
     price: 65000,
     priceType: "rent",
     currency: "INR",
@@ -333,38 +384,36 @@ const sampleProperties = [
     contactPerson: "PropertyHub",
     contactPhone: "+91 99999 00000",
     contactEmail: "info@propertyhub.com",
-    createdBy: "admin"
-  }
+    createdBy: "admin",
+  },
 ];
 
 export async function seedDatabase() {
   try {
     await dbConnect();
-    
-    // Clear existing properties
+
+    await Admin.deleteMany({});
+    await Admin.create(adminDetails);
+
     await Property.deleteMany({});
-    console.log('Cleared existing properties');
-    
-    // Insert sample properties
+
     const result = await Property.insertMany(sampleProperties);
-    console.log(`Successfully seeded ${result.length} properties`);
-    
+
     return result;
   } catch (error) {
-    console.error('Error seeding database:', error);
+    console.error("Error seeding database:", error);
     throw error;
   }
 }
 
-// Run seeder if this file is executed directly
 if (require.main === module) {
   seedDatabase()
     .then(() => {
-      console.log('Database seeding completed');
+      console.log("Database seeding completed");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Database seeding failed:', error);
+      console.error("Database seeding failed:", error);
       process.exit(1);
     });
 }

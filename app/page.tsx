@@ -11,19 +11,14 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <Header />
       
-      {/* Hero Section */}
       <HeroSection />
       
-      {/* Featured Properties */}
       <FeaturedProperties />
       
-      {/* Services */}
       <ServiceCards />
       
-      {/* Contact Section */}
       <ContactForm />
       
-      {/* Floating Buttons */}
       <FloatingButtons />
       
       <Footer />

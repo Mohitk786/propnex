@@ -3,7 +3,6 @@ import { seedDatabase } from '@/lib/seed';
 
 export async function POST(request: NextRequest) {
   try {
-    // In production, you might want to add authentication here
     const result = await seedDatabase();
     
     return NextResponse.json({
