@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/models/admin';
+import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/types/property';
 
-// Mock database - in production, this would be a real database
 let properties: Property[] = [
   {
     id: "1",
@@ -38,71 +37,15 @@ let properties: Property[] = [
   }
 ];
 
-// Helper function to verify admin token
-function verifyAdminToken(request: NextRequest): boolean {
-  const token = request.headers.get('authorization')?.replace('Bearer ', '') ||
-                request.cookies.get('adminToken')?.value;
-  
-  // In production, verify JWT token here
-  // For now, just check if token exists
-  return !!token;
-}
 
-// GET - List all properties (admin only)
-export async function GET(request: NextRequest) {
-  try {
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json(
-        { message: 'Unauthorized. Admin access required.' },
-        { status: 401 }
-      );
-    }
 
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const status = searchParams.get('status');
 
-    let filteredProperties = properties;
-    if (status) {
-      filteredProperties = properties.filter(p => p.status === status);
-    }
-
-    const total = filteredProperties.length;
-    const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedProperties = filteredProperties.slice(startIndex, endIndex);
-
-    return NextResponse.json({
-      properties: paginatedProperties,
-      total,
-      page,
-      limit,
-      totalPages
-    });
-  } catch (error) {
-    console.error('Admin property list error:', error);
-    return NextResponse.json(
-      { message: 'Failed to fetch properties' },
-      { status: 500 }
-    );
-  }
-}
-
-// POST - Create new property (admin only)
 export async function POST(request: NextRequest) {
   try {
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json(
-        { message: 'Unauthorized. Admin access required.' },
-        { status: 401 }
-      );
-    }
+
 
     const body: CreatePropertyRequest = await request.json();
     
-    // Validate required fields
     if (!body.title || !body.description || !body.price || !body.city || !body.state) {
       return NextResponse.json(
         { message: 'Missing required fields' },
@@ -141,15 +84,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT - Update property (admin only)
 export async function PUT(request: NextRequest) {
   try {
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json(
-        { message: 'Unauthorized. Admin access required.' },
-        { status: 401 }
-      );
-    }
+   
 
     const body: UpdatePropertyRequest = await request.json();
     
@@ -191,15 +128,9 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE - Delete property (admin only)
 export async function DELETE(request: NextRequest) {
   try {
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json(
-        { message: 'Unauthorized. Admin access required.' },
-        { status: 401 }
-      );
-    }
+   
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');

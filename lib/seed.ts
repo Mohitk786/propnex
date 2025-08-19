@@ -1,4 +1,4 @@
-import dbConnect from "./db";
+import {dbConnect} from "@/lib/dbConnect";
 import Property from "../models/Property";
 import Admin from "@/models/admin";
 import bcrypt from "bcryptjs";

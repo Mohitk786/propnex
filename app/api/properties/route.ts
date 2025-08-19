@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
+import {dbConnect} from '@/lib/dbConnect';
 import Property from '@/models/Property';
 
 export async function GET(request: NextRequest) {
@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
     
     const { searchParams } = new URL(request.url);
     
-    // Parse query parameters
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const city = searchParams.get('city');
@@ -22,7 +21,6 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured') === 'true';
     const status = searchParams.get('status');
 
-    // Build filter object
     const filter: any = {};
     
     if (city) filter.city = { $regex: city, $options: 'i' };
@@ -39,7 +37,6 @@ export async function GET(request: NextRequest) {
     if (featured) filter.featured = true;
     if (status) filter.status = status;
 
-    // Execute query with pagination
     const skip = (page - 1) * limit;
     
     const [properties, total] = await Promise.all([
@@ -51,7 +48,6 @@ export async function GET(request: NextRequest) {
       Property.countDocuments(filter)
     ]);
 
-    // Calculate pagination
     const totalPages = Math.ceil(total / limit);
 
     const response = {
