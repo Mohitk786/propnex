@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Star
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [user, setUser] = useState<any>(null);
@@ -58,38 +59,8 @@ export default function AdminDashboard() {
       color: "from-blue-500 to-purple-500",
       bgColor: "from-blue-50 to-purple-50"
     },
-    {
-      title: "Active Users",
-      value: "8,934",
-      change: "+8%",
-      icon: Users,
-      color: "from-green-500 to-emerald-500",
-      bgColor: "from-green-50 to-emerald-50"
-    },
-    {
-      title: "Total Revenue",
-      value: "₹2.4 Cr",
-      change: "+23%",
-      icon: DollarSign,
-      color: "from-yellow-500 to-orange-500",
-      bgColor: "from-yellow-50 to-orange-50"
-    },
-    {
-      title: "Growth Rate",
-      value: "18.2%",
-      change: "+5%",
-      icon: TrendingUp,
-      color: "from-pink-500 to-red-500",
-      bgColor: "from-pink-50 to-red-50"
-    }
   ];
-
-  const recentActivities = [
-    { action: "New property listed", property: "Luxury Villa in Mumbai", time: "2 hours ago", type: "listing" },
-    { action: "Property sold", property: "Apartment in Delhi", time: "4 hours ago", type: "sale" },
-    { action: "New user registered", property: "John Doe", time: "6 hours ago", type: "user" },
-    { action: "Contact form submitted", property: "Property inquiry", time: "8 hours ago", type: "contact" }
-  ];
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -154,13 +125,13 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-3xl overflow-hidden group hover:-translate-y-2">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <Link href="/admin/dashboard/add-property" className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-bold mb-2">Add Property</h3>
                   <p className="text-blue-100">List a new property</p>
                 </div>
                 <Plus className="h-8 w-8 text-blue-200 group-hover:scale-110 transition-transform duration-300" />
-              </div>
+              </Link>
             </CardContent>
           </Card>
 
@@ -189,36 +160,7 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
-        {/* Recent Activities */}
-        <Card className="bg-white/80 backdrop-blur-sm border-2 border-white/50 shadow-xl rounded-3xl overflow-hidden">
-          <CardContent className="p-6">
-            <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Recent Activities
-            </h3>
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors duration-300">
-                  <div className={`p-2 rounded-xl ${
-                    activity.type === 'listing' ? 'bg-blue-100 text-blue-600' :
-                    activity.type === 'sale' ? 'bg-green-100 text-green-600' :
-                    activity.type === 'user' ? 'bg-purple-100 text-purple-600' :
-                    'bg-pink-100 text-pink-600'
-                  }`}>
-                    {activity.type === 'listing' && <Building className="h-4 w-4" />}
-                    {activity.type === 'sale' && <DollarSign className="h-4 w-4" />}
-                    {activity.type === 'user' && <Users className="h-4 w-4" />}
-                    {activity.type === 'contact' && <MessageSquare className="h-4 w-4" />}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800">{activity.action}</p>
-                    <p className="text-sm text-gray-600">{activity.property}</p>
-                  </div>
-                  <span className="text-sm text-gray-500">{activity.time}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      
       </main>
     </div>
   );

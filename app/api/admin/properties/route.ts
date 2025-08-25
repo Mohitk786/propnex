@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/types/property';
+import { writeFile } from "fs/promises";
+import path from "path";
 
 let properties: Property[] = [
   {
@@ -40,49 +42,64 @@ let properties: Property[] = [
 
 
 
-export async function POST(request: NextRequest) {
+
+
+export async function POST(req: Request) {
   try {
+    const formData = await req.formData();
 
+    const propertyType = formData.get("propertyType") as string;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const price = formData.get("price") as string;
+    const location = formData.get("location") as string;
+    const address = formData.get("address") as string;
+    const bedrooms = formData.get("bedrooms") as string;
+    const bathrooms = formData.get("bathrooms") as string;
+    const area = formData.get("area") as string;
 
-    const body: CreatePropertyRequest = await request.json();
-    
-    if (!body.title || !body.description || !body.price || !body.city || !body.state) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 }
-      );
+    const parking = formData.get("parking") === "true";
+    const furnished = formData.get("furnished") === "true";
+    const readyToMove = formData.get("readyToMove") === "true";
+
+    const images = formData.getAll("images") as File[];
+    const savedImagePaths: string[] = [];
+
+    for (const image of images) {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      const filePath = path.join(process.cwd(), "public/uploads", image.name);
+      await writeFile(filePath, buffer);
+
+      savedImagePaths.push(`/uploads/${image.name}`);
     }
 
-    // Create new property
-    const newProperty: Property = {
-      id: Date.now().toString(),
-      ...body,
-      currency: body.currency || "INR",
-      areaUnit: body.areaUnit || "sq ft",
-      status: "available",
-      featured: false,
-      images: body.images || [],
-      amenities: body.amenities || [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: "admin"
+    const payload = {
+      title,
+      description,
+      price,
+      propertyType,
+      location,
+      address,
+      bedrooms,
+      bathrooms,
+      area,
+      parking,
+      furnished,
+      readyToMove,
+      images: savedImagePaths,
     };
 
-    properties.push(newProperty);
 
-    return NextResponse.json({
-      message: 'Property created successfully',
-      property: newProperty
-    }, { status: 201 });
 
-  } catch (error) {
-    console.error('Create property error:', error);
-    return NextResponse.json(
-      { message: 'Failed to create property' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true, property: payload });
+  } catch (err) {
+    console.error("❌ Error saving property:", err);
+    return NextResponse.json({ success: false, error: "Failed to save property" }, { status: 500 });
   }
 }
+
 
 export async function PUT(request: NextRequest) {
   try {
