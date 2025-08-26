@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CreatePropertyRequest, UpdatePropertyRequest, Property } from '@/types/property';
+import { CreatePropertyRequest, UpdatePropertyRequest, Property as PropertyType } from '@/types/property';
 import { writeFile } from "fs/promises";
 import path from "path";
+import Property from '@/models/Property';
 
-let properties: Property[] = [
+let properties: PropertyType[] = [
   {
     id: "1",
     title: "Luxury 3BHK Apartment in Downtown Mumbai",
@@ -44,61 +45,45 @@ let properties: Property[] = [
 
 
 
+
+
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData();
+    const formData = await req.json();
 
-    const propertyType = formData.get("propertyType") as string;
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const price = formData.get("price") as string;
-    const location = formData.get("location") as string;
-    const address = formData.get("address") as string;
-    const bedrooms = formData.get("bedrooms") as string;
-    const bathrooms = formData.get("bathrooms") as string;
-    const area = formData.get("area") as string;
+    const payload = { ...formData, image: undefined };
+    const property = await Property.create(payload);
 
-    const parking = formData.get("parking") === "true";
-    const furnished = formData.get("furnished") === "true";
-    const readyToMove = formData.get("readyToMove") === "true";
+    console.log("property", property)
 
-    const images = formData.getAll("images") as File[];
-    const savedImagePaths: string[] = [];
+    const imageName = `${property._id}-${Date.now()}.jpg`;
+    const imagePath = path.join(process.cwd(), "public", "images", imageName);
+    const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/images/${imageName}`;
 
-    for (const image of images) {
-      const bytes = await image.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+    if (formData.image) {
+      const base64Data = formData.image.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, "base64");
+      await writeFile(imagePath, buffer);
 
-      const filePath = path.join(process.cwd(), "public/uploads", image.name);
-      await writeFile(filePath, buffer);
-
-      savedImagePaths.push(`/uploads/${image.name}`);
+      property.image = imageUrl;
+      await property.save();
     }
 
-    const payload = {
-      title,
-      description,
-      price,
-      propertyType,
-      location,
-      address,
-      bedrooms,
-      bathrooms,
-      area,
-      parking,
-      furnished,
-      readyToMove,
-      images: savedImagePaths,
-    };
+    return NextResponse.json({
+      success: true,
+      property,
+    });
 
 
-
-    return NextResponse.json({ success: true, property: payload });
   } catch (err) {
-    console.error("❌ Error saving property:", err);
-    return NextResponse.json({ success: false, error: "Failed to save property" }, { status: 500 });
+    console.log("❌ Error saving property:", err);
+    return NextResponse.json(
+      { success: false, error: "Failed to save property" },
+      { status: 500 }
+    );
   }
 }
+
 
 
 export async function PUT(request: NextRequest) {

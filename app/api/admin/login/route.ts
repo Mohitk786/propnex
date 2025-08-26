@@ -23,7 +23,12 @@ export async function POST(request: NextRequest) {
     }
 
     if(await bcrypt.compare(password, admin.password)) {
-      const token = jwt.sign({ email: email, role: 'PROPXNEX_ADMIN' }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+      const token = jwt.sign(
+        { email, role: "PROPXNEX_ADMIN" },
+        process.env.JWT_SECRET as string,
+        { expiresIn: "30d" }
+      );
+      
       
       const cookie = await cookies();
       cookie.set('propnex_admin_token', token, {
