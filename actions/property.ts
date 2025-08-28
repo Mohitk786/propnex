@@ -21,12 +21,14 @@ interface SearchQuery {
   maxPrice?: number;
   page?: number;
   limit?: number;
+  type?: string;
 }
 
 export const getProperties = async (searchQuery: SearchQuery) => {
   await dbConnect()
   const query = {
     status: "available",
+    ...(searchQuery.type && { type: searchQuery.type }),
     ...(searchQuery.propertyType && { propertyType: searchQuery.propertyType }),
     ...(searchQuery.city && { city: searchQuery.city }),
     ...(searchQuery.state && { state: searchQuery.state }),

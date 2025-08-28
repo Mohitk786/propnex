@@ -17,9 +17,6 @@ export default async function Home() {
 
   properties = JSON.parse(JSON.stringify(properties))
 
-  console.log("properties server", properties)
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <Header />
