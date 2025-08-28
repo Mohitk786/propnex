@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropertyCard from "./property-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,42 +9,18 @@ import { ArrowRight, Search, MapPin } from "lucide-react";
 import { cities, states } from "@/data/cities";
 import { Property, PropertySearchResponse } from "@/types/property";
 
-const FeaturedProperties = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
+interface FeaturedPropertiesProps {
+  properties: Property[];
+}
+
+const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
+  // const [loading, setLoading] = useState(true);
   const [searchCity, setSearchCity] = useState("");
   const [searchState, setSearchState] = useState("");
   const [filteredCities, setFilteredCities] = useState(cities);
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+ 
 
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/properties?featured=true&limit=6');
-      const data: PropertySearchResponse = await response.json();
-      setProperties(data.properties);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCitySearch = (searchTerm: string) => {
-    setSearchCity(searchTerm);
-    if (searchTerm) {
-      const filtered = cities.filter(city => 
-        city.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        city.state.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCities(filtered);
-    } else {
-      setFilteredCities(cities);
-    }
-  };
 
   const handleCitySelect = (cityName: string) => {
     setSearchCity(cityName);
@@ -58,28 +34,28 @@ const FeaturedProperties = () => {
     if (!searchCity) return;
     
     try {
-      setLoading(true);
+      // setLoading(true);
       const params = new URLSearchParams({
         city: searchCity,
         limit: '6'
       });
       
-      const response = await fetch(`/api/properties?${params}`);
-      const data: PropertySearchResponse = await response.json();
-      setProperties(data.properties);
+     
+      // const data: PropertySearchResponse = await response.json();
+      // setProperties(data.properties);
     } catch (error) {
       console.error('Error searching properties:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handleReset = () => {
     setSearchCity("");
     setSearchState("");
     setFilteredCities(cities);
-    fetchProperties();
   };
+
+
+  console.log("properties client", properties) 
 
   return (
     <section className="py-24 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 relative overflow-hidden">
@@ -111,7 +87,7 @@ const FeaturedProperties = () => {
                 <Input
                   placeholder="Search city..."
                   value={searchCity}
-                  onChange={(e) => handleCitySearch(e.target.value)}
+                  onChange={(e) => {}}
                   className="pl-10 bg-white/95 backdrop-blur-sm border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 rounded-xl"
                 />
               </div>
@@ -154,20 +130,20 @@ const FeaturedProperties = () => {
         </div>
 
         {/* Properties Grid */}
-        {loading ? (
-          <div className="text-center py-20">
+        {/* {loading ? ( */}
+          {/* <div className="text-center py-20">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading properties...</p>
-          </div>
-        ) : (
+            <p className="text-gray-600">Loading properties?...</p>
+          </div> */}
+        {/* ) : ( */}
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {properties.map((property) => (
-                <PropertyCard key={property.id} {...property} />
+              {properties?.map((property) => (
+                <PropertyCard key={property._id} {...property} />
               ))}
             </div>
 
-            {properties.length === 0 && (
+            {properties?.length === 0 && (
               <div className="text-center py-20">
                 <p className="text-gray-600 text-lg">No properties found for the selected criteria.</p>
                 <Button 
@@ -179,7 +155,7 @@ const FeaturedProperties = () => {
               </div>
             )}
 
-            {properties.length > 0 && (
+            {properties?.length > 0 && (
               <div className="text-center">
                 <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 rounded-xl px-8 py-4 text-lg font-semibold group">
                   View All Properties
@@ -188,7 +164,7 @@ const FeaturedProperties = () => {
               </div>
             )}
           </>
-        )}
+        {/* )} */}
       </div>
     </section>
   );

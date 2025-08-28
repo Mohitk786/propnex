@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CreatePropertyRequest, UpdatePropertyRequest, Property as PropertyType } from '@/types/property';
+import {  UpdatePropertyRequest, Property as PropertyType } from '@/types/property';
 import { writeFile } from "fs/promises";
 import path from "path";
 import Property from '@/models/Property';
+import { dbConnect } from '@/lib/dbConnect';
 
 let properties: PropertyType[] = [
   {
@@ -52,9 +53,9 @@ export async function POST(req: Request) {
     const formData = await req.json();
 
     const payload = { ...formData, image: undefined };
-    const property = await Property.create(payload);
 
-    console.log("property", property)
+    await dbConnect()
+    const property = await Property.create(payload);
 
     const imageName = `${property._id}-${Date.now()}.jpg`;
     const imagePath = path.join(process.cwd(), "public", "images", imageName);
@@ -83,8 +84,6 @@ export async function POST(req: Request) {
     );
   }
 }
-
-
 
 export async function PUT(request: NextRequest) {
   try {

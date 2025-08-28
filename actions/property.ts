@@ -1,6 +1,8 @@
 "use server";
 
+import { dbConnect } from "@/lib/dbConnect";
 import Property from "@/models/Property";
+import { Property as PropertyType } from "@/types/property";
 
 interface SearchQuery {
   propertyType?: string;
@@ -22,6 +24,7 @@ interface SearchQuery {
 }
 
 export const getProperties = async (searchQuery: SearchQuery) => {
+  await dbConnect()
   const query = {
     status: "available",
     ...(searchQuery.propertyType && { propertyType: searchQuery.propertyType }),
@@ -46,7 +49,9 @@ export const getProperties = async (searchQuery: SearchQuery) => {
     const properties = await Property.find(query)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .lean()
+      .exec() as unknown as PropertyType[];
 
     return {
       success: true,
@@ -56,7 +61,7 @@ export const getProperties = async (searchQuery: SearchQuery) => {
   } catch (error) {
     return {
       success: false,
-      error: "Failed to fetch properties",
+      error: "Failed to fetch properties " + error,
     };
   }
 };

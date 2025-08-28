@@ -12,7 +12,7 @@ interface PropertyCardProps extends Property {
 }
 
 const PropertyCard = ({
-  id,
+  _id,
   title,
   price,
   priceType,
@@ -26,7 +26,7 @@ const PropertyCard = ({
   propertyType,
   status,
   featured,
-  images,
+  image,
   parking,
   furnished,
   readyToMove,
@@ -51,7 +51,7 @@ const PropertyCard = ({
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden">
         <Image
-          src={images[0] || '/property-1.jpg'}
+          src={image || '/property-1.jpg'}
           alt={title}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"

@@ -1,5 +1,5 @@
 export interface Property {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     price: number;
@@ -16,7 +16,7 @@ export interface Property {
     propertyType: 'apartment' | 'house' | 'villa' | 'penthouse' | 'commercial' | 'land' | 'studio';
     status: 'available' | 'sold' | 'rented' | 'pending';
     featured: boolean;
-    images: string[];
+    image: string;
     amenities: string[];
     parking: boolean;
     furnished: boolean;
