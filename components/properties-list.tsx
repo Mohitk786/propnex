@@ -3,17 +3,11 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import PropertyCard from "./property-card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ArrowRight, Search, MapPin } from "lucide-react";
+
+import { ArrowRight } from "lucide-react";
 import { cities } from "@/data/cities";
 import { Property } from "@/types/property";
+import { Suspense } from "react";
 
 interface FeaturedPropertiesProps {
   properties: Property[];
@@ -46,14 +40,14 @@ const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
     updateQuery({
       city: cityName,
       state: city ? city.state : "",
-      page: "1", 
+      page: "1",
     });
   };
 
-  const handleSearch = () => {
-    if (!searchCity) return;
-    updateQuery({ city: searchCity, page: "1" });
-  };
+  // const handleSearch = () => {
+  //   if (!searchCity) return;
+  //   updateQuery({ city: searchCity, page: "1" });
+  // };
 
   const handleReset = () => {
     updateQuery({ city: null, state: null, page: null });
@@ -77,13 +71,18 @@ const FeaturedProperties = ({ properties }: FeaturedPropertiesProps) => {
           </p>
         </div>
 
-       
         {/* Properties Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {properties?.map((property) => (
-            <PropertyCard key={property._id} {...property} />
-          ))}
-        </div>
+        <Suspense
+          fallback={
+            <div className="text-center py-20">Loading properties...</div>
+          }
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {properties?.map((property) => (
+              <PropertyCard key={property._id} {...property} />
+            ))}
+          </div>
+        </Suspense>
 
         {properties?.length === 0 && (
           <div className="text-center py-20">
